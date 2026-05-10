@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="南天搶修">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f172a">
+<meta name="description" content="南天工班搶修進度管理系統">
 <title>南天搶修管理</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230f172a' rx='20'/><text y='.9em' font-size='80' x='10'>⚡</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -1314,6 +1319,39 @@ function loadDemoData(){
   processData();
   updateAuthUI(true);
   toast(`已載入 ${allData.length} 筆範例資料 ✓`,'success');
+}
+</script>
+<script>
+// ─── PWA SERVICE WORKER ───
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    // 用 inline blob 方式註冊 SW，不需要額外檔案
+    const swCode=`
+const CACHE='nantian-v6';
+const ASSETS=['/nantian-repair/','/nantian-repair/index.html'];
+self.addEventListener('install',e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
+  self.skipWaiting();
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  // Google Apps Script 請求直接走網路
+  if(e.request.url.includes('script.google.com')||e.request.url.includes('googleapis.com')){
+    return;
+  }
+  e.respondWith(
+    fetch(e.request).catch(()=>caches.match(e.request))
+  );
+});`;
+    const blob=new Blob([swCode],{type:'application/javascript'});
+    const swUrl=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl,{scope:'/nantian-repair/'})
+      .then(r=>console.log('SW registered'))
+      .catch(e=>console.log('SW error:',e));
+  });
 }
 </script>
 </body>

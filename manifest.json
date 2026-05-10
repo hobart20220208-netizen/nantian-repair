@@ -1,0 +1,28 @@
+{
+  "name": "南天搶修管理系統",
+  "short_name": "南天搶修",
+  "description": "南天工班搶修進度管理系統",
+  "start_url": "/nantian-repair/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230f172a' rx='80'/><text y='400' x='60' font-size='380'>⚡</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "shortcuts": [
+    {
+      "name": "新增工單",
+      "short_name": "新增",
+      "description": "快速新增搶修工單",
+      "url": "/nantian-repair/#add"
+    }
+  ]
+}
